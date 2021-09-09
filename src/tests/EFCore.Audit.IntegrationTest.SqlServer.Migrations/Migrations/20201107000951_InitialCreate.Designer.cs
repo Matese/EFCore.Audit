@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace EFCore.Audit.IntegrationTest.Migrations
+namespace EFCore.Audit.IntegrationTest.SqlServer.Migrations
 {
     [DbContext(typeof(PersonDbContext))]
     [Migration("20201107000951_InitialCreate")]

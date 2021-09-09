@@ -11,10 +11,8 @@ namespace EFCore.Audit
 
         public void Configure(EntityTypeBuilder<AuditMetaDataEntity> builder)
         {
-            #region Configuration
             builder.ToTable("AuditMetaDatas");
             builder.HasKey(x => new { x.HashPrimaryKey, x.SchemaTable });
-            #endregion
         }
     }
 }

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 
-namespace EFCore.Audit.IntegrationTest.Migrations
+namespace EFCore.Audit.IntegrationTest.SqlServer.Migrations
 {
     public partial class InitialCreate : Migration
     {

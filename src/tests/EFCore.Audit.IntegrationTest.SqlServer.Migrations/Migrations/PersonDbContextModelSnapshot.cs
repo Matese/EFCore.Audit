@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace EFCore.Audit.IntegrationTest.Migrations
+namespace EFCore.Audit.IntegrationTest.SqlServer.Migrations
 {
     [DbContext(typeof(PersonDbContext))]
     partial class PersonDbContextModelSnapshot : ModelSnapshot

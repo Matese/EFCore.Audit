@@ -11,11 +11,9 @@ namespace EFCore.Audit
 
         public void Configure(EntityTypeBuilder<AuditEntity> builder)
         {
-            #region Configuration
             builder.ToTable("Audits");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
-            #endregion
         }
     }
 }

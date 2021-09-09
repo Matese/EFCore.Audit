@@ -2,16 +2,17 @@
 using System.Diagnostics;
 using System.Threading;
 
-namespace EFCore.Audit.IntegrationTest.Helpers
+namespace EFCore.Audit.IntegrationTest.Docker
 {
-    public class DockerStarter : IDisposable
+    public class DockerComposer : IDisposable
     {
+        private Process _dockerProcess;
         public string DockerComposeExe { get; private set; }
         public string ComposeFile { get; private set; }
         public string WorkingDir { get; private set; }
         public int SleepInMs { get; private set; }
 
-        public DockerStarter(string dockerComposeExe, string composeFile, string workingDir, int sleepInMs)
+        public DockerComposer(string dockerComposeExe, string composeFile, string workingDir, int sleepInMs)
         {
             DockerComposeExe = dockerComposeExe;
             ComposeFile = composeFile;
@@ -21,30 +22,28 @@ namespace EFCore.Audit.IntegrationTest.Helpers
 
         public void Start()
         {
-            var startInfo = generateInfo("up");
+            var startInfo = GenerateInfo("up");
             _dockerProcess = Process.Start(startInfo);
             Thread.Sleep(SleepInMs);
         }
 
-        private Process _dockerProcess;
-
         public void Dispose()
         {
             _dockerProcess.Close();
-
-            var stopInfo = generateInfo("down");
+            var stopInfo = GenerateInfo("down");
             var stop = Process.Start(stopInfo);
             stop.WaitForExit();
         }
 
-        private ProcessStartInfo generateInfo(string argument)
+        private ProcessStartInfo GenerateInfo(string argument)
         {
             var procInfo = new ProcessStartInfo
             {
-                FileName = DockerComposeExe,
-                Arguments = $"-f {ComposeFile} {argument}",
-                WorkingDirectory = WorkingDir
+                FileName = this.DockerComposeExe,
+                Arguments = $"-f {this.ComposeFile} {argument}",
+                WorkingDirectory = this.WorkingDir
             };
+
             return procInfo;
         }
     }

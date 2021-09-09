@@ -25,13 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="addresstestdata.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="personattributetestdata.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="persontestdata.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

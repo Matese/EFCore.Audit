@@ -1,18 +1,22 @@
 ﻿using EFCore.Audit.TestCommon;
-using EFCore.Audit.UnitTest.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using Xunit;
 
-namespace EFCore.Audit.UnitTest
+namespace EFCore.Audit.IntegrationTest.Tests
 {
-    public class AuditDbContextSyncTest : TestBase
+    public abstract class PersonDbContextTestBase : TestCommon.Tests.PersonDbContextTestBase
     {
-        [Fact]
-        public void Add_and_update_entities_preGenerated_and_onAddGeneratedProperties_Generates_two_audit_and_one_audit_metaDataEntity()
+        public PersonDbContextTestBase(DbConnection connection, string migrationAssembly)
+            : base(connection, migrationAssembly)
+        {
+        }
+
+        public virtual void Add_and_update_entities_preGenerated_and_onAddGeneratedProperties_Generates_two_audit_and_one_audit_metaDataEntity()
         {
             using (var transaction = Connection.BeginTransaction())
             {
@@ -67,133 +71,75 @@ namespace EFCore.Audit.UnitTest
 
                     /************************************************************************************************************************/
 
-                    Assert.Equal(2, auditMetaDatas[0].AuditChanges.Count);
-                    Assert.Equal("AddressEntity", auditMetaDatas[0].DisplayName);
-                    Assert.Null(auditMetaDatas[0].Schema);
-                    Assert.Equal("Addresses", auditMetaDatas[0].Table);
-                    Assert.Equal("Addresses", auditMetaDatas[0].SchemaTable);
-                    Assert.Equal("PersonId=caf3feb5-730e-40a3-9610-404a17b0deba,Type=Home", auditMetaDatas[0].ReadablePrimaryKey);
-                    Assert.Equal("PersonId=caf3feb5-730e-40a3-9610-404a17b0deba,Type=Home".ToGuidHash(), auditMetaDatas[0].HashPrimaryKey);
+                    Assert.Single(auditMetaDatas,
+                                  (x => x.DisplayName == "PersonEntity" && x.Schema == default && x.Table == "Persons" && x.SchemaTable == "Persons"
+                                     && x.ReadablePrimaryKey == "Id=caf3feb5-730e-40a3-9610-404a17b0deba"
+                                     && x.HashPrimaryKey == "Id=caf3feb5-730e-40a3-9610-404a17b0deba".ToGuidHash()
+                                     && x.AuditChanges.Count == 2));
 
-                    Assert.Equal(2, auditMetaDatas[1].AuditChanges.Count);
-                    Assert.Equal("PersonEntity", auditMetaDatas[1].DisplayName);
-                    Assert.Null(auditMetaDatas[1].Schema);
-                    Assert.Equal("Persons", auditMetaDatas[1].Table);
-                    Assert.Equal("Persons", auditMetaDatas[1].SchemaTable);
-                    Assert.Equal("Id=caf3feb5-730e-40a3-9610-404a17b0deba", auditMetaDatas[1].ReadablePrimaryKey);
-                    Assert.Equal("Id=caf3feb5-730e-40a3-9610-404a17b0deba".ToGuidHash(), auditMetaDatas[1].HashPrimaryKey);
+                    Assert.Equal(2, auditMetaDatas.Count(x => x.DisplayName == "PersonAttributesEntity" && x.Schema == default && x.Table == "PersonAttributes" && x.SchemaTable == "PersonAttributes"
+                                                           && x.AuditChanges.Count == 2));
 
-                    Assert.Equal(2, auditMetaDatas[2].AuditChanges.Count);
-                    Assert.Equal("AddressEntity", auditMetaDatas[2].DisplayName);
-                    Assert.Null(auditMetaDatas[2].Schema);
-                    Assert.Equal("Addresses", auditMetaDatas[2].Table);
-                    Assert.Equal("Addresses", auditMetaDatas[2].SchemaTable);
-                    Assert.Equal("PersonId=caf3feb5-730e-40a3-9610-404a17b0deba,Type=Work", auditMetaDatas[2].ReadablePrimaryKey);
-                    Assert.Equal("PersonId=caf3feb5-730e-40a3-9610-404a17b0deba,Type=Work".ToGuidHash(), auditMetaDatas[2].HashPrimaryKey);
+                    Assert.Single(auditMetaDatas,
+                                  (x => x.DisplayName == "AddressEntity" && x.Schema == default && x.Table == "Addresses" && x.SchemaTable == "Addresses"
+                                     && x.ReadablePrimaryKey == "PersonId=caf3feb5-730e-40a3-9610-404a17b0deba,Type=Home"
+                                     && x.HashPrimaryKey == "PersonId=caf3feb5-730e-40a3-9610-404a17b0deba,Type=Home".ToGuidHash()
+                                     && x.AuditChanges.Count == 2));
 
-                    Assert.Equal(2, auditMetaDatas[3].AuditChanges.Count);
-                    Assert.Equal("PersonAttributesEntity", auditMetaDatas[3].DisplayName);
-                    Assert.Null(auditMetaDatas[3].Schema);
-                    Assert.Equal("PersonAttributes", auditMetaDatas[3].Table);
-                    Assert.Equal("PersonAttributes", auditMetaDatas[3].SchemaTable);
-                    Assert.Equal("Id=2", auditMetaDatas[3].ReadablePrimaryKey);
-                    Assert.Equal("Id=2".ToGuidHash(), auditMetaDatas[3].HashPrimaryKey);
-
-                    Assert.Equal(2, auditMetaDatas[4].AuditChanges.Count);
-                    Assert.Equal("PersonAttributesEntity", auditMetaDatas[4].DisplayName);
-                    Assert.Null(auditMetaDatas[4].Schema);
-                    Assert.Equal("PersonAttributes", auditMetaDatas[4].Table);
-                    Assert.Equal("PersonAttributes", auditMetaDatas[4].SchemaTable);
-                    Assert.Equal("Id=1", auditMetaDatas[4].ReadablePrimaryKey);
-                    Assert.Equal("Id=1".ToGuidHash(), auditMetaDatas[4].HashPrimaryKey);
+                    Assert.Single(auditMetaDatas,
+                                  (x => x.DisplayName == "AddressEntity" && x.Schema == default && x.Table == "Addresses" && x.SchemaTable == "Addresses"
+                                     && x.ReadablePrimaryKey == "PersonId=caf3feb5-730e-40a3-9610-404a17b0deba,Type=Work"
+                                     && x.HashPrimaryKey == "PersonId=caf3feb5-730e-40a3-9610-404a17b0deba,Type=Work".ToGuidHash()
+                                     && x.AuditChanges.Count == 2));
 
                     /************************************************************************************************************************/
 
-                    Assert.NotNull(audits[0].AuditMetaData);
-                    Assert.NotEqual(default, audits[0].Id);
-                    Assert.Equal(EntityState.Added, audits[0].EntityState);
-                    Assert.Equal("{\"Id\":\"caf3feb5-730e-40a3-9610-404a17b0deba\",\"FirstName\":\"Ofella\",\"Gender\":1,\"LastName\":\"Andrichuk\"}", audits[0].NewValues);
-                    Assert.Null(audits[0].OldValues);
-                    Assert.NotNull(audits[0].ByUser);
-                    Assert.NotEqual(default, audits[0].DateTimeOffset);
+                    Assert.Single(audits,
+                                  (x => x.AuditMetaData != default && x.Id != default && x.EntityState == EntityState.Added
+                                     && x.NewValues == "{\"Id\":\"caf3feb5-730e-40a3-9610-404a17b0deba\",\"FirstName\":\"Ofella\",\"Gender\":1,\"LastName\":\"Andrichuk\"}"
+                                     && x.OldValues == default && x.ByUser != default && x.DateTimeOffset != default));
 
-                    Assert.NotNull(audits[1].AuditMetaData);
-                    Assert.NotEqual(default, audits[1].Id);
-                    Assert.Equal(EntityState.Modified, audits[1].EntityState);
-                    Assert.Equal("{\"FirstName\":\"OfellaModified\"}", audits[1].NewValues);
-                    Assert.Equal("{\"FirstName\":\"Ofella\"}", audits[1].OldValues);
-                    Assert.NotNull(audits[1].ByUser);
-                    Assert.NotEqual(default, audits[1].DateTimeOffset);
+                    Assert.Single(audits,
+                                  (x => x.AuditMetaData != default && x.Id != default && x.EntityState == EntityState.Modified
+                                     && x.NewValues == "{\"FirstName\":\"OfellaModified\"}"
+                                     && x.OldValues == "{\"FirstName\":\"Ofella\"}" && x.ByUser != default && x.DateTimeOffset != default));
 
-                    Assert.NotNull(audits[2].AuditMetaData);
-                    Assert.NotEqual(default, audits[2].Id);
-                    Assert.Equal(EntityState.Added, audits[2].EntityState);
-                    Assert.Equal("{\"PersonId\":\"caf3feb5-730e-40a3-9610-404a17b0deba\",\"Type\":1,\"City\":\"Azteca\",\"HouseNumber\":\"844\",\"PostalCode\":50188,\"Street\":\"Vahlen\"}", audits[2].NewValues);
-                    Assert.Null(audits[2].OldValues);
-                    Assert.NotNull(audits[2].ByUser);
-                    Assert.NotEqual(default, audits[2].DateTimeOffset);
+                    Assert.Single(audits,
+                                  (x => x.AuditMetaData != default && x.Id != default && x.EntityState == EntityState.Added
+                                     && x.NewValues == "{\"PersonId\":\"caf3feb5-730e-40a3-9610-404a17b0deba\",\"Type\":1,\"City\":\"Azteca\",\"HouseNumber\":\"844\",\"PostalCode\":50188,\"Street\":\"Vahlen\"}"
+                                     && x.OldValues == default && x.ByUser != default && x.DateTimeOffset != default));
 
-                    Assert.NotNull(audits[3].AuditMetaData);
-                    Assert.NotEqual(default, audits[3].Id);
-                    Assert.Equal(EntityState.Added, audits[3].EntityState);
-                    Assert.Equal("{\"PersonId\":\"caf3feb5-730e-40a3-9610-404a17b0deba\",\"Type\":2,\"City\":\"Tawun\",\"HouseNumber\":\"7\",\"PostalCode\":32921,\"Street\":\"Welch\"}", audits[3].NewValues);
-                    Assert.Null(audits[3].OldValues);
-                    Assert.NotNull(audits[3].ByUser);
-                    Assert.NotEqual(default, audits[3].DateTimeOffset);
+                    Assert.Single(audits,
+                                  (x => x.AuditMetaData != default && x.Id != default && x.EntityState == EntityState.Added
+                                     && x.NewValues == "{\"PersonId\":\"caf3feb5-730e-40a3-9610-404a17b0deba\",\"Type\":2,\"City\":\"Tawun\",\"HouseNumber\":\"7\",\"PostalCode\":32921,\"Street\":\"Welch\"}"
+                                     && x.OldValues == default && x.ByUser != default && x.DateTimeOffset != default));
 
-                    Assert.NotNull(audits[4].AuditMetaData);
-                    Assert.NotEqual(default, audits[4].Id);
-                    Assert.Equal(EntityState.Modified, audits[4].EntityState);
-                    Assert.Equal("{\"PostalCode\":12345}", audits[4].NewValues);
-                    Assert.Equal("{\"PostalCode\":32921}", audits[4].OldValues);
-                    Assert.NotNull(audits[4].ByUser);
-                    Assert.NotEqual(default, audits[4].DateTimeOffset);
+                    Assert.Single(audits,
+                                  (x => x.AuditMetaData != default && x.Id != default && x.EntityState == EntityState.Modified
+                                     && x.NewValues == "{\"PostalCode\":54321}"
+                                     && x.OldValues == "{\"PostalCode\":50188}" && x.ByUser != default && x.DateTimeOffset != default));
 
-                    Assert.NotNull(audits[5].AuditMetaData);
-                    Assert.NotEqual(default, audits[5].Id);
-                    Assert.Equal(EntityState.Modified, audits[5].EntityState);
-                    Assert.Equal("{\"PostalCode\":54321}", audits[5].NewValues);
-                    Assert.Equal("{\"PostalCode\":50188}", audits[5].OldValues);
-                    Assert.NotNull(audits[5].ByUser);
-                    Assert.NotEqual(default, audits[5].DateTimeOffset);
+                    Assert.Single(audits,
+                                 (x => x.AuditMetaData != default && x.Id != default && x.EntityState == EntityState.Modified
+                                    && x.NewValues == "{\"PostalCode\":12345}"
+                                    && x.OldValues == "{\"PostalCode\":32921}" && x.ByUser != default && x.DateTimeOffset != default));
 
-                    Assert.NotNull(audits[6].AuditMetaData);
-                    Assert.NotEqual(default, audits[6].Id);
-                    Assert.Equal(EntityState.Added, audits[6].EntityState);
-                    Assert.Equal("{\"Attribute\":1,\"AttributeValue\":\"Married\",\"PersonId\":\"caf3feb5-730e-40a3-9610-404a17b0deba\",\"Id\":2}", audits[6].NewValues);
-                    Assert.Null(audits[6].OldValues);
-                    Assert.NotNull(audits[6].ByUser);
-                    Assert.NotEqual(default, audits[6].DateTimeOffset);
+                    Assert.Equal(2, audits.Count(x => x.AuditMetaData.DisplayName == "PersonAttributesEntity" && x.Id != default && x.EntityState == EntityState.Added
+                                                   && x.OldValues == default && x.ByUser != default && x.DateTimeOffset != default));
 
-                    Assert.NotNull(audits[7].AuditMetaData);
-                    Assert.NotEqual(default, audits[7].Id);
-                    Assert.Equal(EntityState.Added, audits[7].EntityState);
-                    Assert.Equal("{\"Attribute\":3,\"AttributeValue\":\"Turkish\",\"PersonId\":\"caf3feb5-730e-40a3-9610-404a17b0deba\",\"Id\":1}", audits[7].NewValues);
-                    Assert.Null(audits[7].OldValues);
-                    Assert.NotNull(audits[7].ByUser);
-                    Assert.NotEqual(default, audits[7].DateTimeOffset);
+                    Assert.Single(audits,
+                                 (x => x.AuditMetaData != default && x.Id != default && x.EntityState == EntityState.Modified
+                                    && x.NewValues == "{\"Attribute\":2,\"AttributeValue\":\"Graphic Designer\"}"
+                                    && x.OldValues == "{\"Attribute\":1,\"AttributeValue\":\"Married\"}" && x.ByUser != default && x.DateTimeOffset != default));
 
-                    Assert.NotNull(audits[8].AuditMetaData);
-                    Assert.NotEqual(default, audits[8].Id);
-                    Assert.Equal(EntityState.Deleted, audits[8].EntityState);
-                    Assert.Null(audits[8].NewValues);
-                    Assert.Equal("{\"Id\":1,\"Attribute\":3,\"AttributeValue\":\"Turkish\",\"PersonId\":\"caf3feb5-730e-40a3-9610-404a17b0deba\"}", audits[8].OldValues);
-                    Assert.NotNull(audits[8].ByUser);
-                    Assert.NotEqual(default, audits[8].DateTimeOffset);
-
-                    Assert.NotNull(audits[9].AuditMetaData);
-                    Assert.NotEqual(default, audits[9].Id);
-                    Assert.Equal(EntityState.Modified, audits[9].EntityState);
-                    Assert.Equal("{\"Attribute\":2,\"AttributeValue\":\"Graphic Designer\"}", audits[9].NewValues);
-                    Assert.Equal("{\"Attribute\":1,\"AttributeValue\":\"Married\"}", audits[9].OldValues);
-                    Assert.NotNull(audits[9].ByUser);
-                    Assert.NotEqual(default, audits[9].DateTimeOffset);
+                    Assert.Single(audits,
+                                 (x => x.AuditMetaData != default && x.Id != default && x.EntityState == EntityState.Deleted
+                                    && x.NewValues == default && x.ByUser != default && x.DateTimeOffset != default));
                 }
             }
         }
 
-        [Fact]
-        public void Add_and_update_one_entity_with_preGeneratedProperties_Generates_two_audit_and_one_auditMetaDataEntity()
+        public virtual void Add_and_update_one_entity_with_preGeneratedProperties_Generates_two_audit_and_one_auditMetaDataEntity()
         {
             using (var transaction = Connection.BeginTransaction())
             {
@@ -264,8 +210,7 @@ namespace EFCore.Audit.UnitTest
             }
         }
 
-        [Fact]
-        public void Add_one_entity_with_onAddGenerated_properties_one_entity_with_pre_generated_properties_Generates_two_auditentity_and_two_auditMetaDataEntities()
+        public virtual void Add_one_entity_with_onAddGenerated_properties_one_entity_with_pre_generated_properties_Generates_two_auditentity_and_two_auditMetaDataEntities()
         {
             using (var transaction = Connection.BeginTransaction())
             {
@@ -328,8 +273,7 @@ namespace EFCore.Audit.UnitTest
             }
         }
 
-        [Fact]
-        public void Add_one_entity_with_preGenerated_properties_Generates_one_auditEntity_and_auditMetaDataEntity()
+        public virtual void Add_one_entity_with_preGenerated_properties_Generates_one_auditEntity_and_auditMetaDataEntity()
         {
             using (var transaction = Connection.BeginTransaction())
             {

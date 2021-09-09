@@ -11,10 +11,8 @@ namespace EFCore.Audit.TestCommon
 
         public void Configure(EntityTypeBuilder<AddressEntity> builder)
         {
-            #region Configuration
             builder.ToTable("Addresses");
             builder.HasKey(x => new { x.PersonId, x.Type });
-            #endregion
         }
     }
 }

@@ -11,11 +11,9 @@ namespace EFCore.Audit.TestCommon
 
         public void Configure(EntityTypeBuilder<PersonEntity> builder)
         {
-            #region Configuration
             builder.ToTable("Persons");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
-            #endregion
         }
     }
 }

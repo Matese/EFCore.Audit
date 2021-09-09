@@ -11,7 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore.Audit.UnitTest", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore.Audit.IntegrationTest", "tests\EFCore.Audit.IntegrationTest\EFCore.Audit.IntegrationTest.csproj", "{CC7FE82E-3553-4AAC-867C-80A1BF25A462}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCore.Audit.TestCommon", "tests\EFCore.Audit.TestCommon\EFCore.Audit.TestCommon.csproj", "{0D51248E-F4B2-4BFE-95D7-E2819C80F7A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore.Audit.TestCommon", "tests\EFCore.Audit.TestCommon\EFCore.Audit.TestCommon.csproj", "{0D51248E-F4B2-4BFE-95D7-E2819C80F7A1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore.Audit.IntegrationTest.SqlServer", "tests\EFCore.Audit.IntegrationTest.SqlServer\EFCore.Audit.IntegrationTest.SqlServer.csproj", "{07EB3178-2DA6-4904-9AAD-21F346A6B332}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFCore.Audit.IntegrationTest.SqlServer.Migrations", "tests\EFCore.Audit.IntegrationTest.SqlServer.Migrations\EFCore.Audit.IntegrationTest.SqlServer.Migrations.csproj", "{4F3A2AE8-5CA4-4251-8EC0-0B3C46C08CB7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "core", "core", "{4BF6FA11-308B-497C-B349-3A2E9BD731C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,14 +41,25 @@ Global
 		{0D51248E-F4B2-4BFE-95D7-E2819C80F7A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D51248E-F4B2-4BFE-95D7-E2819C80F7A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D51248E-F4B2-4BFE-95D7-E2819C80F7A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07EB3178-2DA6-4904-9AAD-21F346A6B332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07EB3178-2DA6-4904-9AAD-21F346A6B332}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07EB3178-2DA6-4904-9AAD-21F346A6B332}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07EB3178-2DA6-4904-9AAD-21F346A6B332}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F3A2AE8-5CA4-4251-8EC0-0B3C46C08CB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F3A2AE8-5CA4-4251-8EC0-0B3C46C08CB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F3A2AE8-5CA4-4251-8EC0-0B3C46C08CB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F3A2AE8-5CA4-4251-8EC0-0B3C46C08CB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CD0F6362-E926-4377-B2CA-242CE2DDB1BE} = {F10B51B8-E4E0-4B14-A0C6-F78B93B339E6}
-		{CC7FE82E-3553-4AAC-867C-80A1BF25A462} = {F10B51B8-E4E0-4B14-A0C6-F78B93B339E6}
-		{0D51248E-F4B2-4BFE-95D7-E2819C80F7A1} = {F10B51B8-E4E0-4B14-A0C6-F78B93B339E6}
+		{CC7FE82E-3553-4AAC-867C-80A1BF25A462} = {4BF6FA11-308B-497C-B349-3A2E9BD731C3}
+		{0D51248E-F4B2-4BFE-95D7-E2819C80F7A1} = {4BF6FA11-308B-497C-B349-3A2E9BD731C3}
+		{07EB3178-2DA6-4904-9AAD-21F346A6B332} = {F10B51B8-E4E0-4B14-A0C6-F78B93B339E6}
+		{4F3A2AE8-5CA4-4251-8EC0-0B3C46C08CB7} = {4BF6FA11-308B-497C-B349-3A2E9BD731C3}
+		{4BF6FA11-308B-497C-B349-3A2E9BD731C3} = {F10B51B8-E4E0-4B14-A0C6-F78B93B339E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {984B485F-D0D5-4EBE-8EB0-9AA6DD104E84}
