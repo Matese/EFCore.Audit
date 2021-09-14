@@ -30,10 +30,12 @@
 	<ItemGroup>
 		<ProjectReference Include="..\EFCore.Audit.IntegrationTest.SqlServer.Migrations\EFCore.Audit.IntegrationTest.SqlServer.Migrations.csproj" />
 		<ProjectReference Include="..\EFCore.Audit.IntegrationTest\EFCore.Audit.IntegrationTest.csproj" />
-		<ProjectReference Include="..\EFCore.Audit.TestCommon\EFCore.Audit.TestCommon.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="Docker\Dockerfile">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 		<None Update="docker-compose.yml">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>

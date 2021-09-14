@@ -1,5 +1,5 @@
 ﻿{
   "Settings": {
-    "ConnectionString": "Server=localhost, 1433;User=sa;Password=P@ssw0rd123"
+    "ConnectionString": "Server=169.254.9.143, 1433;User=sa;Password=P@ssw0rd123;database=PersonDb;"
   }
 }

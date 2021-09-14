@@ -1,5 +1,5 @@
 ﻿using EFCore.Audit.IntegrationTest.Config;
-using EFCore.Audit.TestCommon;
+using EFCore.Audit.IntegrationTest;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
