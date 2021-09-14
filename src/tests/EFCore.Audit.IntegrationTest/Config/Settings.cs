@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace EFCore.Audit.TestCommon
+namespace EFCore.Audit.IntegrationTest.Config
 {
     public class Settings
     {
@@ -21,7 +21,7 @@ namespace EFCore.Audit.TestCommon
             this.IsGithubAction = IsGithubAction;
             this.DockerComposeFile = "docker-compose.yml";
             this.DockerComposeExePath = "C:\\ProgramData\\chocolatey\\bin\\docker-compose.exe";
-            this.DockerSleepInMs = 30000;
+            this.DockerSleepInMs = 60000;
             this.IsDockerComposeRequired = true;
             this.IsGithubAction = false;
             this.DockerWorkingDir = this.GetType().GetDir().GetParentDir().GetParentDir().GetParentDir();

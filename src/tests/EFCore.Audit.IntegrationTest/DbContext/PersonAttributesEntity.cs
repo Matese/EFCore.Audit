@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace EFCore.Audit.TestCommon
+namespace EFCore.Audit.IntegrationTest
 {
     [Auditable]
     public class PersonAttributesEntity

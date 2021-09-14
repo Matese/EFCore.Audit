@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace EFCore.Audit.TestCommon
+namespace EFCore.Audit.IntegrationTest
 {
     [Auditable]
     public class PersonEntity

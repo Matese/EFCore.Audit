@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EFCore.Audit.TestCommon
+namespace EFCore.Audit.IntegrationTest
 {
     public class UserProvider : IAuditUserProvider
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EFCore.Audit.TestCommon
+namespace EFCore.Audit.IntegrationTest
 {
     [Auditable]
     public class AddressEntity

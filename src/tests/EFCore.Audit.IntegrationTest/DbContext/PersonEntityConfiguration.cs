@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EFCore.Audit.TestCommon
+namespace EFCore.Audit.IntegrationTest
 {
     public class PersonEntityConfiguration : IEntityTypeConfiguration<PersonEntity>
     {
