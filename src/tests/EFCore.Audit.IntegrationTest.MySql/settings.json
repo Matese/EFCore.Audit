@@ -1,0 +1,5 @@
+﻿{
+  "Settings": {
+    "ConnectionString": "Server=169.254.9.143;Port=3306;Database=PersonDb;Uid=sa;Pwd=P@ssw0rd123;AllowUserVariables=true;UseAffectedRows=false;"
+  }
+}

@@ -1,0 +1,14 @@
+﻿version: '3.4'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - 3306:3306
+    restart: always
+    environment:
+      - MYSQL_DATABASE=PersonDb
+      - MYSQL_USER=sa
+      - MYSQL_PASSWORD=P@ssw0rd123
+      - MYSQL_ROOT_PASSWORD=P@ssw0rd123
