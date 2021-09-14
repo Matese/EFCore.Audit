@@ -1,4 +1,4 @@
-﻿using EFCore.Audit.TestCommon;
+﻿using EFCore.Audit.IntegrationTest;
 using Microsoft.Extensions.Configuration;
 
 namespace EFCore.Audit.IntegrationTest.Config

@@ -1,23 +1,22 @@
-﻿using EFCore.Audit.TestCommon;
+﻿using EFCore.Audit.IntegrationTest;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace EFCore.Audit.IntegrationTest.Tests
 {
-    public abstract class PersonDbContextTestBaseAsync : TestCommon.Tests.PersonDbContextTestBase
+    public abstract class PersonDbContextIntegrationTestBase : PersonDbContextTestBase
     {
-        public PersonDbContextTestBaseAsync(DbConnection connection, string migrationAssembly)
+        public PersonDbContextIntegrationTestBase(DbConnection connection, string migrationAssembly)
             : base(connection, migrationAssembly)
         {
         }
 
-        public virtual async Task Add_and_update_entities_preGenerated_and_onAddGeneratedProperties_Generates_two_audit_and_one_audit_metaDataEntity()
+        public virtual void Add_and_update_entities_preGenerated_and_onAddGeneratedProperties_Generates_two_audit_and_one_audit_metaDataEntity()
         {
             using (var transaction = Connection.BeginTransaction())
             {
@@ -37,29 +36,30 @@ namespace EFCore.Audit.IntegrationTest.Tests
                     context.SaveChanges();
 
                     addressEntity1 = AddressTestData.Where(x => x.PersonId == personEntity.Id).ElementAt(0);
-                    await context.Addresses.AddAsync(addressEntity1);
+                    context.Addresses.Add(addressEntity1);
                     addressEntity2 = AddressTestData.Where(x => x.PersonId == personEntity.Id).ElementAt(1);
-                    await context.Addresses.AddAsync(addressEntity2);
-                    await context.SaveChangesAsync();
-                    addressEntity1 = await context.Addresses.FirstOrDefaultAsync(x => x.PersonId == personEntity.Id && x.Type == addressEntity1.Type);
+                    context.Addresses.Add(addressEntity2);
+                    context.SaveChanges();
+                    addressEntity1 = context.Addresses.FirstOrDefault(x => x.PersonId == personEntity.Id && x.Type == addressEntity1.Type);
                     addressEntity1.PostalCode = 12345;
-                    addressEntity2 = await context.Addresses.FirstOrDefaultAsync(x => x.PersonId == personEntity.Id && x.Type == addressEntity2.Type);
+                    addressEntity2 = context.Addresses.FirstOrDefault(x => x.PersonId == personEntity.Id && x.Type == addressEntity2.Type);
                     addressEntity2.PostalCode = 54321;
-                    await context.SaveChangesAsync();
+                    context.SaveChanges();
 
                     personAttributesEntity1 = PersonAttributeTestData.Where(x => x.PersonId == personEntity.Id).ElementAt(0);
-                    await context.PersonAttributes.AddAsync(personAttributesEntity1);
+                    context.PersonAttributes.Add(personAttributesEntity1);
                     personAttributesEntity2 = PersonAttributeTestData.Where(x => x.PersonId == personEntity.Id).ElementAt(1);
-                    await context.PersonAttributes.AddAsync(personAttributesEntity2);
-                    await context.SaveChangesAsync();
+                    context.PersonAttributes.Add(personAttributesEntity2);
+                    context.SaveChanges();
                     personAttributesEntity1 = context.PersonAttributes.FirstOrDefault(x => x.Id == personAttributesEntity1.Id);
                     personAttributesEntity2 = context.PersonAttributes.FirstOrDefault(x => x.Id == personAttributesEntity2.Id);
-                    personAttributesEntity1.DummyString = "changingDummyString";
+                    personAttributesEntity1.DummyString = "cahangingDummyString";
                     personAttributesEntity1.Attribute = AttributeType.Profession;
                     personAttributesEntity1.AttributeValue = "Graphic Designer";
                     context.Remove(personAttributesEntity2);
-                    await context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
+
                 using (var context = CreateContext(transaction))
                 {
                     //Assert
@@ -94,7 +94,7 @@ namespace EFCore.Audit.IntegrationTest.Tests
 
                     /************************************************************************************************************************/
 
-                    Assert.Single(audits, 
+                    Assert.Single(audits,
                                   (x => x.AuditMetaData != default && x.Id != default && x.EntityState == EntityState.Added
                                      && x.NewValues == "{\"Id\":\"caf3feb5-730e-40a3-9610-404a17b0deba\",\"FirstName\":\"Ofella\",\"Gender\":1,\"LastName\":\"Andrichuk\"}"
                                      && x.OldValues == default && x.ByUser != default && x.DateTimeOffset != default));
@@ -139,7 +139,7 @@ namespace EFCore.Audit.IntegrationTest.Tests
             }
         }
 
-        public virtual async Task Add_and_update_one_entity_with_preGeneratedProperties_Generates_two_audit_and_one_auditMetaDataEntity()
+        public virtual void Add_and_update_one_entity_with_preGeneratedProperties_Generates_two_audit_and_one_auditMetaDataEntity()
         {
             using (var transaction = Connection.BeginTransaction())
             {
@@ -151,20 +151,20 @@ namespace EFCore.Audit.IntegrationTest.Tests
                 {
                     personEntity = PersonTestData.FirstOrDefault();
                     notModifiedFirstName = personEntity.FirstName;
-                    entityEntry = await context.Persons.AddAsync(personEntity);
-                    await context.SaveChangesAsync();
+                    entityEntry = context.Persons.Add(personEntity);
+                    context.SaveChanges();
 
-                    personEntity = await context.Persons.FirstOrDefaultAsync();
+                    personEntity = context.Persons.FirstOrDefault();
                     personEntity.FirstName = $"{personEntity.FirstName}Modified";
-                    await context.SaveChangesAsync();
+                    context.SaveChanges();
                 }
 
                 using (var context = CreateContext(transaction))
                 {
                     //Assert
-                    AuditMetaDataEntity auditMetaData = await context.AuditMetaDatas.Include(amd => amd.AuditChanges).FirstOrDefaultAsync();
-                    AuditEntity auditAdded = await context.Audits.Include(a => a.AuditMetaData).OrderBy(x => x.DateTimeOffset).FirstOrDefaultAsync();
-                    AuditEntity auditModified = await context.Audits.Include(a => a.AuditMetaData).OrderByDescending(x => x.DateTimeOffset).FirstOrDefaultAsync();
+                    AuditMetaDataEntity auditMetaData = context.AuditMetaDatas.Include(amd => amd.AuditChanges).FirstOrDefault();
+                    AuditEntity auditAdded = context.Audits.Include(a => a.AuditMetaData).ToList().OrderBy(x => x.DateTimeOffset).FirstOrDefault();
+                    AuditEntity auditModified = context.Audits.Include(a => a.AuditMetaData).ToList().OrderByDescending(x => x.DateTimeOffset).FirstOrDefault();
 
                     Assert.Single(context.AuditMetaDatas);
                     Assert.Equal("PersonEntity", auditMetaData.DisplayName);
@@ -210,7 +210,7 @@ namespace EFCore.Audit.IntegrationTest.Tests
             }
         }
 
-        public virtual async Task Add_one_entity_with_onAddGenerated_properties_one_entity_with_pre_generated_properties_Generates_two_auditentity_and_two_auditMetaDataEntities()
+        public virtual void Add_one_entity_with_onAddGenerated_properties_one_entity_with_pre_generated_properties_Generates_two_auditentity_and_two_auditMetaDataEntities()
         {
             using (var transaction = Connection.BeginTransaction())
             {
@@ -224,16 +224,16 @@ namespace EFCore.Audit.IntegrationTest.Tests
                     person = PersonTestData.FirstOrDefault(p => p.Id != default);
                     personAttribute = PersonAttributeTestData.FirstOrDefault(p => p.PersonId == person.Id);
 
-                    personEntityEntry = await context.Persons.AddAsync(person);
-                    personAttributesEntityEntry = await context.PersonAttributes.AddAsync(personAttribute);
-                    await context.SaveChangesAsync();
+                    personEntityEntry = context.Persons.Add(person);
+                    personAttributesEntityEntry = context.PersonAttributes.Add(personAttribute);
+                    context.SaveChanges();
                 }
 
                 using (var context = CreateContext(transaction))
                 {
                     //Assert
-                    List<AuditMetaDataEntity> auditMetaDatas = await context.AuditMetaDatas.Include(amd => amd.AuditChanges).ToListAsync();
-                    List<AuditEntity> audits = await context.Audits.Include(a => a.AuditMetaData).ToListAsync();
+                    List<AuditMetaDataEntity> auditMetaDatas = context.AuditMetaDatas.Include(amd => amd.AuditChanges).ToList();
+                    List<AuditEntity> audits = context.Audits.Include(a => a.AuditMetaData).ToList();
 
                     Assert.Equal(2, context.AuditMetaDatas.Count());
                     Assert.Equal(2, context.Audits.Count());
@@ -273,7 +273,7 @@ namespace EFCore.Audit.IntegrationTest.Tests
             }
         }
 
-        public virtual async Task Add_one_entity_with_preGenerated_properties_Generates_one_auditEntity_and_auditMetaDataEntity()
+        public virtual void Add_one_entity_with_preGenerated_properties_Generates_one_auditEntity_and_auditMetaDataEntity()
         {
             using (var transaction = Connection.BeginTransaction())
             {
@@ -283,15 +283,15 @@ namespace EFCore.Audit.IntegrationTest.Tests
                 using (var context = CreateContext(transaction))
                 {
                     addedPerson = PersonTestData.FirstOrDefault();
-                    entityEntry = await context.Persons.AddAsync(addedPerson);
-                    await context.SaveChangesAsync();
+                    entityEntry = context.Persons.Add(addedPerson);
+                    context.SaveChanges();
                 }
 
                 using (var context = CreateContext(transaction))
                 {
                     //Assert
-                    AuditMetaDataEntity auditMetaData = await context.AuditMetaDatas.Include(amd => amd.AuditChanges).FirstOrDefaultAsync();
-                    AuditEntity audit = await context.Audits.Include(a => a.AuditMetaData).FirstOrDefaultAsync();
+                    AuditMetaDataEntity auditMetaData = context.AuditMetaDatas.Include(amd => amd.AuditChanges).FirstOrDefault();
+                    AuditEntity audit = context.Audits.Include(a => a.AuditMetaData).FirstOrDefault();
 
                     Assert.Single(context.AuditMetaDatas);
                     Assert.Equal("PersonEntity", auditMetaData.DisplayName);

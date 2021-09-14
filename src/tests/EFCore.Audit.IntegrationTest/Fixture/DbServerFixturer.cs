@@ -1,6 +1,6 @@
 ﻿using EFCore.Audit.IntegrationTest.Config;
 using EFCore.Audit.IntegrationTest.Docker;
-using EFCore.Audit.TestCommon;
+using EFCore.Audit.IntegrationTest;
 using System;
 
 namespace EFCore.Audit.IntegrationTest.Fixture
