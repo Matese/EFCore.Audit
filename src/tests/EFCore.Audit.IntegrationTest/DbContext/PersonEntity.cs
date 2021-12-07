@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EFCore.Audit.IntegrationTest
 {
-    [Auditable]
+    //[Auditable]
     public class PersonEntity
     {
         public Guid Id { get; set; }

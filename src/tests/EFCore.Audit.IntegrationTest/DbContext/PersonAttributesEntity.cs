@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace EFCore.Audit.IntegrationTest
 {
-    [Auditable]
+    //[Auditable]
     public class PersonAttributesEntity
     {
         public long Id { get; set; }

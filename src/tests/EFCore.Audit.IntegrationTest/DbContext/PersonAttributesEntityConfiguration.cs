@@ -14,6 +14,7 @@ namespace EFCore.Audit.IntegrationTest
             builder.ToTable("PersonAttributes");
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            builder.Auditable().NotAuditable(cx => cx.DummyString);
         }
     }
 }

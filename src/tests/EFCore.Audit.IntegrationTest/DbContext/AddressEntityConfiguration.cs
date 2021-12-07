@@ -13,6 +13,7 @@ namespace EFCore.Audit.IntegrationTest
         {
             builder.ToTable("Addresses");
             builder.HasKey(x => new { x.PersonId, x.Type });
+            builder.Auditable();
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace EFCore.Audit.IntegrationTest
 {
-    [Auditable]
+    //[Auditable]
     public class AddressEntity
     {
         public Guid PersonId { get; set; }

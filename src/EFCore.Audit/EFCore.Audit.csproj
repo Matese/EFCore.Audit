@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>d4d6a970-b96d-4c13-a4d5-b8f7a8de4448</UserSecretsId>
     <Version>1.0.0-alpha</Version>
     <Authors>Doğa Barış Çakmak</Authors>
